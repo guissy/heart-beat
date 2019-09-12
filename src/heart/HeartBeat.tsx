@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import useNearBy, { mousemoveFn } from './useNearBy';
+import { mousemoveFn } from './useNearBy';
 import { Tween } from 'react-gsap';
 // @ts-ignore
 import { Power2 } from 'gsap/TweenMax';
@@ -31,12 +31,9 @@ const HearBeat: React.FC = () => {
   const [stateHeart, setStateHeart] = React.useState<Status>('paused');
   const [bw, setBw] = React.useState(0);
   const [scale, setScale] = React.useState(1);
+  const [distance, setDistance] = React.useState(NaN);
   const elm = tweenRef.current && (tweenRef.current as any).targets[0];
-  const distance = useNearBy(elm, setScale);
-  useEffect(() => {
-    window.addEventListener('mousemove', mousemoveFn);
-    return () => window.removeEventListener('mousemove', mousemoveFn);
-  })
+  mousemoveFn(elm, setDistance);
   /*useEffect(() => {
     const tweenHeart = tweenRef.current.getGSAP();
     const time = lineEq(heartbeatInterval.from, heartbeatInterval.to, distanceThreshold.max, distanceThreshold.min, distance);
