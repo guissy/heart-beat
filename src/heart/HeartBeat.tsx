@@ -2,6 +2,8 @@ import React, { useCallback, useEffect } from 'react';
 import { mousemoveFn } from './useNearBy';
 import { Tween } from 'react-gsap';
 // @ts-ignore
+import TweenMax from 'gsap/TweenMax';
+// @ts-ignore
 import { Power2 } from 'gsap/TweenMax';
 
 const lineEq = (y2: number, y1: number, x2: number, x1: number, currentVal: number) => {
@@ -29,13 +31,19 @@ const HearBeat: React.FC = () => {
   const ref = React.useRef(null);
   const tweenRef = React.useRef<Tween | any>(null);
   const [stateHeart, setStateHeart] = React.useState<Status>('paused');
-  const [bw, setBw] = React.useState(0);
-  const [scale, setScale] = React.useState(1);
   const [distance, setDistance] = React.useState(NaN);
-  const elm = tweenRef.current && (tweenRef.current as any).targets[0];
-  mousemoveFn(elm, setDistance);
-  /*useEffect(() => {
+
+  useEffect(() => {
+    const elm = tweenRef.current && (tweenRef.current as any).targets[0];
+    const mouseMove = mousemoveFn(elm, setDistance);
+    window.addEventListener('mousemove', mouseMove);
+    return () => window.removeEventListener('mousemove', mouseMove);
+  }, []);
+
+  /** 心跳 */
+  useEffect(() => {
     const tweenHeart = tweenRef.current.getGSAP();
+    const iconHeart = tweenRef.current && (tweenRef.current as any).targets[0];
     const time = lineEq(heartbeatInterval.from, heartbeatInterval.to, distanceThreshold.max, distanceThreshold.min, distance);
     tweenHeart.timeScale(Math.min(Math.max(time, heartbeatInterval.from), heartbeatInterval.to));
     if (distance < distanceThreshold.max && distance >= distanceThreshold.min && stateHeart !== 'running') {
@@ -44,37 +52,38 @@ const HearBeat: React.FC = () => {
     } else if ((distance > distanceThreshold.max || distance < distanceThreshold.min) && stateHeart !== 'paused') {
       tweenHeart.pause();
       setStateHeart('paused');
-      // TweenMax.to(iconHeart, .2, {
-      //   ease: Power2.easeOut,
-      //   scale: 1,
-      //   onComplete: () => tweenHeart.time(0)
-      // });
-      setScale(1);
+      TweenMax.to(iconHeart, .2, {
+        ease: Power2.easeOut,
+        scale: 1,
+        onComplete: () => tweenHeart.time(0)
+      });
     }
+  }, [distance, stateHeart]);
 
+  /** 灰色-彩色 */
+  useEffect(() => {
+    const iconHeart = tweenRef.current && (tweenRef.current as any).targets[0];
     const bw = lineEq(grayscaleInterval.from, grayscaleInterval.to, distanceThreshold.max, distanceThreshold.min, distance);
-    setBw(bw);
-    // TweenMax.to(iconHeart, 1, {
-    //   ease: Power2.easeOut,
-    //   filter: `grayscale(${Math.min(bw, grayscaleInterval.from)})`
-    // });
-  }, [distance, stateHeart]);*/
-  console.log('☞☞☞ 9527 HeartBeat 60', distance);
+    TweenMax.to(iconHeart, 1, {
+      ease: Power2.easeOut,
+      filter: `grayscale(${Math.min(bw, grayscaleInterval.from)})`
+    });
+  }, [distance]);
+
   return (
     <>
       {ref.current && JSON.stringify((ref.current as any).getBoundingClientRect())}
       <Tween
-        to={{
-          filter: `grayscale(${Math.min(bw, grayscaleInterval.from)})`,
-          scale: scale,
-        }}
-        duration={0.2}
+        duration={5}
         ease={Power2.easeOut}
         ref={tweenRef}
+        yoyo={true}
+        repeat={-1}
+        yoyoEase={Power2.easeOut}
+        scale={1.3}
       >
         <svg
           className="icon icon--heart"
-          filter="grayscale(1)"
           ref={ref}
         >
           <defs>
@@ -96,7 +105,6 @@ const HearBeat: React.FC = () => {
         }
         .icon--heart {
             color: #ec165f;
-            filter: grayscale(1);
         }
       `}</style>
     </>
