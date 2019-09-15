@@ -1,10 +1,12 @@
 import React from 'react';
 import './ParticleButton.css';
 import Particles, { ParticleOption } from './Particles';
+import anime from 'animejs';
 
 const ParticleButton: React.FC = () => {
   const itemRef = React.useRef(null);
   const btnRef = React.useRef<HTMLButtonElement>(null);
+  const backRef = React.useRef<HTMLButtonElement>(null);
   const particles = React.useRef<Particles>(null);
   const particlesOpts: ParticleOption =
     // {
@@ -27,40 +29,6 @@ const ParticleButton: React.FC = () => {
       oscillationCoefficient: 1
     } as any;
 
-    // particlesOpts.complete = () => {
-    //   if ( !buttonVisible ) {
-    //     anime.remove(bttnBack);
-    //     anime({
-    //       targets: bttnBack,
-    //       duration: 300,
-    //       easing: 'easeOutQuint',
-    //       opacity: 1,
-    //       scale: [0,1]
-    //     });
-    //     bttnBack.style.pointerEvents = 'auto';
-    //   }
-    // };
-    // const particles = new Particles(bttn, particlesOpts);
-
-    // bttnBack.addEventListener('click', () => {
-    //   if ( !particles.isAnimating() && !buttonVisible ) {
-    //     anime.remove(bttnBack);
-    //     anime({
-    //       targets: bttnBack,
-    //       duration: 300,
-    //       easing: 'easeOutQuint',
-    //       opacity: 0,
-    //       scale: 0
-    //     });
-    //     bttnBack.style.pointerEvents = 'none';
-    //
-    //     particles.integrate({
-    //       duration: 800,
-    //       easing: 'easeOutSine'
-    //     });
-    //     buttonVisible = !buttonVisible;
-    //   }
-    // });
 
   React.useEffect(() => {
     // @ts-ignore
@@ -69,6 +37,44 @@ const ParticleButton: React.FC = () => {
     btnRef.current!.addEventListener('click', () => {
       if ( !particles.current!.isAnimating() && buttonVisible ) {
         particles.current!.disintegrate();
+        buttonVisible = !buttonVisible;
+      }
+    });
+
+    // @ts-ignore
+    particles.current = new Particles(btnRef.current as any, particlesOpts);
+    const bttnBack = backRef.current!;
+
+    particlesOpts.complete = () => {
+      if ( !buttonVisible ) {
+        anime.remove(bttnBack);
+        anime({
+          targets: bttnBack,
+          duration: 300,
+          easing: 'easeOutQuint',
+          opacity: 1,
+          scale: [0,1]
+        });
+        bttnBack.style.pointerEvents = 'auto';
+      }
+    };
+
+    bttnBack.addEventListener('click', () => {
+      if ( !particles.current!.isAnimating() && !buttonVisible ) {
+        anime.remove(bttnBack);
+        anime({
+          targets: bttnBack,
+          duration: 300,
+          easing: 'easeOutQuint',
+          opacity: 0,
+          scale: 0
+        });
+        bttnBack.style.pointerEvents = 'none';
+
+        particles.current!.integrate({
+          duration: 800,
+          easing: 'easeOutSine'
+        } as ParticleOption);
         buttonVisible = !buttonVisible;
       }
     });
@@ -109,7 +115,7 @@ const ParticleButton: React.FC = () => {
           {/*</div>*/}
         {/*</div>*/}
         <div className="grid__item theme-12" ref={itemRef}>
-          <button className="action" style={{ opacity: 1, transform: 'scale(1)', pointerEvents: 'auto' }}>
+          <button ref={backRef} className="action" style={{ opacity: 1, transform: 'scale(1)', pointerEvents: 'auto' }}>
             <svg className="icon icon--rewind">
               <use xlinkHref="#icon-rewind"/>
             </svg>

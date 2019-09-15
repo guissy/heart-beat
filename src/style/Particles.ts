@@ -59,7 +59,7 @@ export default class Particles {
   lastProgress: number = 0;
 
   constructor(element: HTMLElement, options: ParticleOption) {
-    this.el = getElement(element);
+    this.el = element;
     this.options = Object.assign(
       { color: getCSSValue(this.el, 'background-color') },
       this.defaults,
@@ -90,8 +90,7 @@ export default class Particles {
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
     this.canvas.className = 'particles-canvas';
-    // @ts-ignore
-    this.canvas.style = 'display:none;';
+    this.canvas.style.display = 'none';
     this.wrapper = document.createElement('div');
     this.wrapper.className = 'particles-wrapper';
     this.el!.parentNode!.insertBefore(this.wrapper, this.el);
@@ -218,8 +217,8 @@ export default class Particles {
   addTransforms = (value: number) => {
     var translateProperty = this.isHorizontal() ? 'translateX' : 'translateY';
     var translateValue = this.o.direction === 'left' || this.o.direction === 'top' ? value : -value;
-    this.wrapper!.style[transformString] = translateProperty + '(' + translateValue + '%)';
-    this.el.style[transformString] = translateProperty + '(' + -translateValue + '%)';
+    this.wrapper!.style.transform = translateProperty + '(' + translateValue + '%)';
+    this.el.style.transform = translateProperty + '(' + -translateValue + '%)';
   };
   disintegrate = (options?: ParticleOption) => {
     if (!this.isAnimating()) {
@@ -298,13 +297,7 @@ function getCSSValue(el: HTMLElement, prop: string) {
   }
 }
 
-var t = 'transform';
-var transformString = (getCSSValue(document.body, t) ? t : '-webkit-' + t) as any;
 
 function rand(value: number) {
   return Math.random() * value - value / 2;
-}
-
-function getElement(element: string|HTMLElement): HTMLElement {
-  return typeof element === 'string' ? document.querySelector(element) || document.body : element;
 }
