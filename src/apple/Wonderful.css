@@ -2,19 +2,24 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  /* height: 100vh; */
+  height: 587px;
 }
 
 .wonderful .h1-box {
   background: #e4e3e4;
   border-radius: 10px;
-  height: 100vh;
+  width: 428px;
+  height: 587px;
+  padding: 64px 54px 280px 54px;
+  transform-origin: center 18vh;
 }
 
 .wonderful .h1-wrap {
   margin: auto;
   background: #ffffff;
-  width: 50%;
+  width: 100%;
+  padding: 20%;
   border-radius: 30px;
 }
 
