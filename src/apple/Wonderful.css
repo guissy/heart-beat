@@ -1,0 +1,24 @@
+.wonderful {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.wonderful .h1-box {
+  background: #e4e3e4;
+  border-radius: 10px;
+  height: 100vh;
+}
+
+.wonderful .h1-wrap {
+  margin: auto;
+  background: #ffffff;
+  width: 50%;
+  border-radius: 30px;
+}
+
+.wonderful .h1-wrap > img {
+  display: block;
+  width: 100%;
+}
