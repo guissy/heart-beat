@@ -55,3 +55,20 @@
   top: 60px;
   background: #454345;
 }
+
+.loading {
+  font-size: 50px;
+  animation: resize 1s infinite;
+}
+
+@keyframes resize {
+  from {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(3);
+  }
+  to {
+    transform: scale(0.1);
+  }
+}
