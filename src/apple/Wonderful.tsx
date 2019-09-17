@@ -22,6 +22,7 @@ const Wonderful: React.FC = () => {
   }, []);
   return (
     <section className="wonderful">
+      <img src={h1} alt="" style={{ display: 'none' }} />
       {
         !!num && <h1 className="loading">{num}</h1>
       }
